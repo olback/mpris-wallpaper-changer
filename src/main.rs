@@ -27,8 +27,8 @@ const DEFAULT_WALLPAPER: &str = "/usr/share/backgrounds/Alma-mountains-dark.xml"
 const GENERATED_WALLPAPER: &str = "/tmp/cover-art.png";
 const WIDTH: u32 = 2560;
 const HEIGHT: u32 = 1440;
+const BLUR: u32 = 32;
 
-// const MPRIS_INTERFACE: &str = "org.mpris.MediaPlayer2.Player";
 const MPRIS_SIGNAL_INTERFACE: &str = "org.freedesktop.DBus.Properties";
 const MPRIS_SIGNAL_MEMBER: &str = "PropertiesChanged";
 const MPRIS_SIGNAL_OBJECT: &str = "/org/mpris/MediaPlayer2";
@@ -129,7 +129,7 @@ fn gen_wallpaper() -> Result<(), Error> {
     let image_reader = image::io::Reader::new(Cursor::new(art_bytes)).with_guessed_format()?;
     let art = image_reader.decode()?.to_rgb8();
 
-    let background = image_modifier::image_background(&art, [WIDTH, HEIGHT], Some(32));
+    let background = image_modifier::image_background(&art, [WIDTH, HEIGHT], Some(BLUR));
     let new_image = image_modifier::paste_images(
         &background,
         &art,
