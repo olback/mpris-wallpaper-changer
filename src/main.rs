@@ -4,7 +4,10 @@
 // https://github.com/l1na-forever/mpris-notifier/tree/mainline
 
 use {
-    dbus::{blocking::Connection, channel::MatchingReceiver, message::MatchRule, Message},
+    dbus::{
+        arg::messageitem::MessageItem, blocking::Connection, channel::MatchingReceiver,
+        message::MatchRule, Message,
+    },
     giftwrap::Wrap,
     mpris::PlayerFinder,
     reqwest::blocking::get,
@@ -80,7 +83,21 @@ fn main() {
     }
 }
 
-fn handle_message(_: &Message) {
+fn handle_message(msg: &Message) {
+    // Track changes generate metadata events.
+    // Unless we do this filtering, we also get volume events
+    // which we do not want.
+    let is_metadata = msg.get_items().iter().any(|m| match m {
+        MessageItem::Dict(dict) => dict
+            .iter()
+            .any(|(key, _)| key == &MessageItem::Str("Metadata".into())),
+        _ => false,
+    });
+
+    if !is_metadata {
+        return;
+    }
+
     let set_result = match gen_wallpaper() {
         Ok(_) => dconf_rs::set_string(
             "/org/gnome/desktop/background/picture-uri",
