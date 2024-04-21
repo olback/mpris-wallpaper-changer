@@ -26,8 +26,9 @@ enum Error {
     Io(std::io::Error),
 }
 
-const DEFAULT_WALLPAPER: &str = "/usr/share/backgrounds/Alma-mountains-dark.xml";
+const DEFAULT_WALLPAPER: &str = "/usr/share/backgrounds/gnome/blobs-d.svg";
 const GENERATED_WALLPAPER: &str = "/tmp/cover-art.png";
+const WALLPAPER_SETTINGS_PATH: &str = "/org/gnome/desktop/background/picture-uri-dark";
 const WIDTH: u32 = 2560;
 const HEIGHT: u32 = 1440;
 const BLUR: u32 = 32;
@@ -100,13 +101,13 @@ fn handle_message(msg: &Message) {
 
     let set_result = match gen_wallpaper() {
         Ok(_) => dconf_rs::set_string(
-            "/org/gnome/desktop/background/picture-uri",
+            WALLPAPER_SETTINGS_PATH,
             &format!("file://{GENERATED_WALLPAPER}"),
         ),
         Err(e) => {
             eprintln!("{e:?}");
             dconf_rs::set_string(
-                "/org/gnome/desktop/background/picture-uri",
+                WALLPAPER_SETTINGS_PATH,
                 &format!("file://{DEFAULT_WALLPAPER}"),
             )
         }
@@ -154,9 +155,7 @@ fn gen_wallpaper() -> Result<(), Error> {
         [0, 0, WIDTH / 2, HEIGHT / 2],
     );
 
-    new_image
-        .save(GENERATED_WALLPAPER)
-        .expect("Failed to save wallpaper");
+    new_image.save(GENERATED_WALLPAPER)?;
 
     Ok(())
 }

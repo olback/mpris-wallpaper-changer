@@ -1,6 +1,7 @@
 use {
     fast_image_resize as fr,
     fastblur::gaussian_blur,
+    fr::pixels::PixelExt,
     image::{imageops, RgbImage},
     std::num::NonZeroU32,
 };
@@ -62,7 +63,7 @@ pub fn fast_resize(img: &RgbImage, nwidth: u32, nheight: u32) -> RgbImage {
 }
 
 fn resize_image_with_cropping(
-    mut src_view: fr::ImageView,
+    mut src_view: fr::DynamicImageView,
     dst_width: NonZeroU32,
     dst_height: NonZeroU32,
 ) -> fr::Image {

@@ -7,10 +7,10 @@ edition = "2021"
 
 [dependencies]
 mpris = "2.0.0"
-image = "0.24"
+image = "0.25"
 fastblur = { git = "https://github.com/fschutt/fastblur" }
-fast_image_resize = "1"
-reqwest = { version = "0.11", features = [ "blocking", "native-tls" ], default-features = false }
+fast_image_resize = "3"
+reqwest = { version = "0.12", features = [ "blocking", "native-tls" ], default-features = false }
 dconf_rs = "0.3.0"
 giftwrap = "0.5.0"
 dbus = "0.9.7"
